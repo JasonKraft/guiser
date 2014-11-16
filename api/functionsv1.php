@@ -295,7 +295,25 @@ function getPostByCategory($CID, $limit){
 
 }
 
-//function getPost
+function mb_getPostByCategory($CID, $limit, $offset){
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID' ORDER BY CID LIMIT $limit, $offset");
+
+	$full;
+	while($row = mysqli_fetch_array($query)){
+		array_push($full, $row);
+	}
+
+	$connection->close();
+	if(count($full) > 0){
+		return json_encode($full);
+	}
+	else{
+		echo "No Posts in this Category";
+	}
+
+}
 
 //make a comment
 function createComment($UID, $PID, $content){
