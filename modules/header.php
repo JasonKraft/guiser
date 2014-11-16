@@ -58,6 +58,11 @@
 				#header_logo {
 					font-size:24px;
 				}
+					#logo_image {
+						height:48px;
+						width:48px;
+						background-image: url('./img/');
+					}
 			#call_to_action {
 				background:url('./img/geyser.jpg');
 				background-position: center 25%;
@@ -77,7 +82,10 @@
 		<header>
 			<div class="container">
 				<div class="row">
-					<div class="col-md-6" id="header_logo">GUISER</div>
+					<div class="col-md-6" id="header_logo">
+						GUISER
+						<span id="logo_image"></span>
+					</div>
 					<div class="col-md-6" id="header_login">
 						<form action="login.php" class="form-inline pull-right">
 							<input type="email" class="form-control" name="email" placeholder="Email">
