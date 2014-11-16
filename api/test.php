@@ -1,4 +1,7 @@
 <?php
+
+//WHERE date > DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+
 include "functionsv1.php";
 
 
