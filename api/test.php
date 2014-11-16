@@ -1,4 +1,7 @@
 <?php
+
+//WHERE date > DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+
 include "functionsv1.php";
 
 
@@ -40,22 +43,22 @@ else{
 }
 
 createPost(1,0,"yikyak","test 2 for you!");
-createPost(2,0,"hackRPI", "started at the bottom now i hv no clue where i am");
+createPost(2,0,"hackRPI", "started at the bottom now i hv no clue where i am\n");
 
 echo "getPost:";
 echo getPost(0);
 
-echo "findPost:";
+echo "\tfindPost:";
 echo findPost(1);
 
-echo "getPostsByUser";
+echo "\ngetPostsByUser";
 echo getPostsByUser(1);
 
-echo "getCategories";
+echo "\tgetCategories";
 echo getCategories(0);
 
 if(erasePost(1)){
-	echo "erase post successful";
+	echo "erase post successful\n";
 }
 else{
 	echo "get this off the internet\n";
@@ -63,3 +66,20 @@ else{
 
 echo "getPostByCategory\n";
 echo getPostByCategory(0, 25);
+
+if(createComment(1,0,"this done well")){
+	echo "this done well, comment\n"
+}
+else{
+	echo "this not done well... comments \n"
+}
+
+createComment(1,0,"this done well")
+createComment(2,0,"how goes it")
+createComment(1,1,"sleep is for the weak. get rekt scrub. ur time is ogre. its my swamp now\n")
+
+echo getComment(0)
+echo "\n comments by swoon:"
+echo "should be how goes it == "
+echo getCommentsByUser(2)
+>>>>>>> origin/master
