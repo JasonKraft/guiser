@@ -1,5 +1,18 @@
 <?php
 include "functionsv1.php";
+'''
+UID starts at 1
+Test for:
+createUser
+findUser
+createPost
+findPost
+getPost
+getPostsByUser
+getCategories
+erasePost
+getPostByCategory
+'''
 
 
 if(createUser("ToastyToes","HackRPI","encarc@rpi.edu")){
@@ -9,16 +22,56 @@ else{
 	echo "You done fucked up mate. This create user ";
 }
 
+if(createUser("ToastyToes","HackRPI", "magic_cardmaster@yahoo.com")){
+	echo "same username, should not work";
+}
+else{
+	echo "it worked, same name did not create user";
+}
+
+if(createUser("swood","HackRPI", "encarc@rpi.edu")){
+	echo "same email, should not work";
+}
+else{
+	echo "it worked, same email did not create user";
+}
+
+createUser("swood","HackRPI", "magic_cardmaster@yahoo.com");
+
+
+
 echo "finding user:";
 echo findUser("ToastyToes");
 
 
-if(createPost(0,0,"yikyak","i does tests")){
+if(createPost(1,0,"yikyak","i does tests")){
 	echo "Post created";
 }
 else{
 	echo "Done messed up posting";
 }
 
-echo findPost(0); 
+createPost(1,0,"yikyak","test 2 for you!");
+createPost(2,0,"hackRPI", "started at the bottom now i hv no clue where i am");
 
+echo "getPost:";
+echo getPost(0);
+
+echo "findPost:";
+echo findPost(1);
+
+echo "getPostsByUser";
+echo getPostsByUser(1);
+
+echo "getCategories";
+echo getCategories(0);
+
+if(erasePost(1)){
+	echo "erase post successful";
+}
+else{
+	echo "get this off the internet";
+}
+
+echo "getPostByCategory";
+echo getPostByCategory(0);
