@@ -171,8 +171,6 @@ function findUser($username){
 //creates a post with passed information
 function createPost($UID, $CID, $title, $content){
 
-	
-
 	$connection = connect();
 
 	insert($connection, "posts", "(UID, CID, title, content) VALUES($UID, $CID, '$title', '$content')");
@@ -193,6 +191,7 @@ function createPost($UID, $CID, $title, $content){
 	//     if(!mysqli_query($connection, $sql)){
  //    		die('Error: '. mysqli_error($connection));
  //    	}
+
     $connection->close();
 
     return TRUE;
@@ -415,15 +414,24 @@ function toggleUpvoteComment($UID, $PCID){
 
 } 
 
-/*function sortByUpvotes($CID, $limit, $offset, $type){
+function sortByUpvotes($CID, $limit, $offset, $type){
 
 	$connection = connect();
 	if ($type == 0){
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID ORDER BY upvotes LIMIT $limit, $offset)";
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)";
 	} else if ($type == 1){
-
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)";
+	} else if ($type == 2){
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
+	} else if ($CID == "" and $type == 0){
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)");
+	} else if ($CID == "" and $type == 1) {
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)");
+	} else if ($CID == "" and $type == 2) {
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
 	}
-}*/
+	$connection -> close();
+}
 
 function eraseComment($PCID){
 
@@ -472,3 +480,4 @@ function getRecentActivity($UID, $limit, $offset){
 		echo "Error: Unable to get Recent Activities";
 	}
 }
+

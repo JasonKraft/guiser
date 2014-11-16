@@ -1,9 +1,9 @@
 <?php
 
-//WHERE date > DATE_SUB(CURDATE(), INTERVAL 7 DAY)
 
-include "functionsv1.php";
 
+include "../modules/constants.php";
+include API;
 
 
 if(createUser("ToastyToes","HackRPI","encarc@rpi.edu")){
