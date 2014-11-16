@@ -24,39 +24,19 @@ $error=''; // Variable To Store Error Message
 		$password = mysqli_real_escape_string($connection, $password);
 		$confirmpassword = mysqli_real_escape_string($connection, $confirmpassword);
 		$connection->close();
-		if ($password !== $confirmpassword) {
+		if ($password != $confirmpassword) {
 			$error = "Confirmation password does not match password!";
 		} else {
 			$createuserstatus = createUser($username, $password, $email);
-			if ($createuserstatus[0] === 0) {
+			if ($createuserstatus[0] == 0) {
 				$_SESSION['user_id'] = $createuserstatus[1];
 				$_SESSION['username'] = $username;
 				header("location: " . INDEX);
-			} else if ($createuserstatus[0] === 1) {
+			} else if ($createuserstatus[0] == 1) {
 				$error = "That username already exists.";
 			} else {
 				$error = "There already exists an account with that email address.";
 			}
-			// // Establishing Connection with Server by passing server_name, user_id and password as a parameter
-			// $connection = connect();
-			// // To protect MySQL injection for Security purpose
-			// $email = stripslashes($email);
-			// $password = stripslashes($password);
-			// $email = mysqli_real_escape_string($connection, $email);
-			// $password = mysqli_real_escape_string($connection, $password);
-
-			// // SQL query to fetch information of registerd users and finds user match.
-			// $query = mysqli_query($connection,"SELECT * FROM users where password='$password' AND useremail='$email'");
-
-			// if (($rows = mysqli_num_rows($query)) == 1) {
-			// 	$result = mysqli_fetch_array($query);
-			// 	$_SESSION['user_id'] = $result["ID"]; // Initializing Session
-			// 	$_SESSION['username'] = $result["username"];
-			// 	header("location: " . INDEX); // Redirecting To Other Page
-			// } else {
-			// 	$error = "Email or Password is invalid";
-			// 	// echo $error;
-			// }
 		}
 	}
 // }

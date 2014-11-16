@@ -4,6 +4,8 @@
 		include LOGIN;
 	} else if (isset($_GET["logout"])) {
 		include LOGOUT;
+	} else if (isset($_GET["register"])) {
+		include REGISTER;
 	} else {
 		include SESSION;
 	}

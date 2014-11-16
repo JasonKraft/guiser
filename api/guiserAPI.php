@@ -54,14 +54,19 @@ function createUser($username, $password, $email) {
 
 	$connection = connect();
 	$success = array();
-	$query = mysqli_query($connection,"SELECT ID FROM users WHERE username='$username' OR useremail='$email'");
+	$query = mysqli_query($connection,"SELECT * FROM users WHERE username='$username' OR useremail='$email'");
 	if(mysqli_num_rows($query)>0){
-		array_push($success, FALSE);
-        array_push($success, mysqli_fetch_array($query)["ID"]);
+		$result = mysqli_fetch_array($query);
+		if ($result['useremail'] == $email) {
+			array_push($success, 2);
+		} else {
+			array_push($success, 1);
+		}
+        array_push($success, $result["ID"]);
         return $success;
     }else{
     	insert($connection, "users", "(username, password, useremail) VALUES('$username', '$password', '$email')");
-    	array_push($success, TRUE);
+    	array_push($success, 0);
     	array_push($success, mysqli_insert_id($connection));
     }
 

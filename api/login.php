@@ -7,7 +7,7 @@ $error=''; // Variable To Store Error Message
 // if (isset($_POST['submit'])) {
 	if (empty($_GET['email']) || empty($_GET['password'])) {
 	$error = "Email or Password is invalid";
-	echo $error;
+	// echo $error;
 	} else {
 		// Define $username and $password
 		$email=$_GET['email'];
@@ -30,7 +30,7 @@ $error=''; // Variable To Store Error Message
 			header("location: " . INDEX); // Redirecting To Other Page
 		} else {
 			$error = "Email or Password is invalid";
-			echo $error;
+			// echo $error;
 		}
 	}
 // }
