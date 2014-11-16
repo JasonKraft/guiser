@@ -20,7 +20,7 @@ if (isset($_POST['submit'])) {
 		$password = mysqli_real_escape_string($password);
 
 		// SQL query to fetch information of registerd users and finds user match.
-		$query = mysqli_query("SELECT * FROM users where password='$password' AND useremail='$useremail'", $connection);
+		$query = mysqli_query($connection,"SELECT * FROM users where password='$password' AND useremail='$useremail'");
 
 		if (($rows = mysqli_num_rows($query)) == 1) {
 			$_SESSION['login_user']=$email; // Initializing Session
