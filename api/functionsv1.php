@@ -145,7 +145,7 @@ function createPost($UID, $CID, $title, $content){
 		echo "Error!";
 	}
 
-	$sql = "INSERT INTO activities (UID, type, ID) VALUES($UID, CREATE_POST, $last_id)";
+	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, CREATE_POST, $last_id)";
 	    if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
@@ -331,7 +331,7 @@ function createComment($UID, $PID, $content){
 		echo "Error!";
 	}
 
-	$sql = "INSERT INTO activities (UID, type, ID) VALUES($UID, CREATE_COMMENT, $last_id)";
+	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, CREATE_COMMENT, $last_id)";
 	    if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
