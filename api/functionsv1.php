@@ -437,3 +437,23 @@ function editComment($UID, $PCID, $content){
 	}
 	$connection -> close();
 }
+
+function getRecentActivity($UID, $limit, $offset){
+
+	$connection = connect();
+	$query = mysqli_query($connection, "SELECT * FROM activity WHERE UID = $UID ORDER BY date LIMIT $limit, $offset");
+
+	$activities = array();
+
+	while($row = mysqli_fetch_array($query)){
+		array_push($activities, $row);
+	}
+
+	$connection->close();
+
+	if (count($activities) > 0){
+		json_encode($activities);
+	} else {
+		echo "Error: Unable to get Recent Activities";
+	}
+}
