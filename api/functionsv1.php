@@ -22,16 +22,17 @@ function connect($ip, $port, $username, $password, $db){
 }
 
 //Function may or may not be complete, don't know what to do with settings
-function createUser($username, $password, $email, $settings) {
+function createUser($username, $password, $email) {
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	$defaultSettings = NULL;
 
 	$query = mysqli_query($connection,"SELECT ID FROM users WHERE username='$username' OR useremail='$email'");
 	if(mysqli_num_rows($query)>0){
         echo "input already exists";
         return FALSE;
     }else{
-    	$sql = 'INSERT INTO users (username, password, useremail, settings) VALUES($username, $password, $email, $settings');
+    	$sql = 'INSERT INTO users (username, password, useremail, settings) VALUES($username, $password, $email', '$defaultsettings');
     	if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
@@ -187,4 +188,37 @@ function erasePost($PID){
 	$connection->close();
 
 	return TRUE;
+}
+
+//returns an array containing all posts made by user
+function getPostsByUser($UID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT PID FROM posts WHERE UID = '$UID'");
+	$posts = array();
+
+	while($row = mysqli_fetch_array($query)){
+		array_push($posts, $row["PID"]);
+	}
+
+	$connection->close();
+
+	return $posts;
+}
+
+function getCommentsByUser($UID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($onnection, "SELECT PCID from comments WHERE UID = '$UID'");
+	$comments = array();
+
+	while($row = mysqli_fetch_array($query)){
+		array_push($posts, $row["PCID"]);
+	}
+
+	$connection->close();
+
+	return $comments;
 }
