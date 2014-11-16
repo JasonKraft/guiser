@@ -139,8 +139,8 @@ function createPost($UID, $CID, $title, $content){
     	if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
-	if (mysql_query($connection, $sql)) {
-		$last_id = mysql_insert_id($connection);
+	if (mysqli_query($connection, $sql)) {
+		$last_id = mysqli_insert_id($connection);
 	} else {
 		echo "Error!";
 	}
@@ -274,11 +274,11 @@ function getCategories($CID){
 }
 
 //get all the posts that have a certain category ID
-function getPostByCategory($CID){
+function getPostByCategory($CID, $limit){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID'");
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID' ORDER BY CID LIMIT $limit");
 
 	$full;
 	while($row = mysqli_fetch_array($query)){
@@ -294,6 +294,8 @@ function getPostByCategory($CID){
 	}
 
 }
+
+//function getPost
 
 //make a comment
 function createComment($UID, $PID, $content){
