@@ -21,7 +21,7 @@ function connect($ip, $port, $username, $password, $db){
 	return $connection;
 }
 
-
+//Function may or may not be complete, don't know what to do with settings
 function createUser($username, $password, $email, $settings) {
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
