@@ -262,7 +262,7 @@ function getCategories($CID){
 //get all the posts that have a certain category ID
 function getPostByCategory($CID){
 
-	connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
 	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID'");
 
@@ -271,7 +271,7 @@ function getPostByCategory($CID){
 		array_push($full, $row);
 	}
 
-	connection->close();
+	$connection->close();
 	if(count($full) > 0){
 		return json_encode($full);
 	}
