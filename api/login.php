@@ -16,8 +16,8 @@ if (isset($_POST['submit'])) {
 		// To protect MySQL injection for Security purpose
 		$email = stripslashes($email);
 		$password = stripslashes($password);
-		$email = mysql_real_escape_string($email);
-		$password = mysql_real_escape_string($password);
+		$email = mysqli_real_escape_string($email);
+		$password = mysqli_real_escape_string($password);
 
 		// SQL query to fetch information of registerd users and finds user match.
 		$query = mysqli_query("SELECT * FROM users where password='$password' AND useremail='$useremail'", $connection);
