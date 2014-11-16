@@ -344,7 +344,6 @@ function toggleUpvoteComment($UID, $PCID){
 	
 	insert($connection, "activity", "(UID, type, ID) VALUES ($UID, ".UPVOTE_COMMENT.", $PCID)");
 	$connection->close();
-	}
 
 } 
 
@@ -352,9 +351,9 @@ function sortByUpvotes($CID, $limit, $offset, $type){
 
 	$connection = connect();
 	if ($CID != "" && $type == 0){
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)";
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)");
 	} else if ($CID != "" && $type == 1){
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)";
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)");
 	} else if ($CID != "" && $type == 2){
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
 	} else if ($type == 0){
@@ -381,7 +380,6 @@ function editComment($UID, $PCID, $content){
 
 	$connection = connect();
 	update($connection, "comments", "SET content = '$content' WHERE PCID = $PCID");
-	}
 	insert($category, "activity", "(UID, type, ID) VALUES ($UID, ".CREATE_COMMENT.", $PCID)");
 
 	$connection -> close();

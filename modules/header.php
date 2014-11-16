@@ -1,8 +1,8 @@
 <?php
 	include "../modules/constants.php";
-	if (isset($_POST["login"])) {
+	if (isset($_GET["login"])) {
 		include LOGIN;
-	} else if (isset($_POST["logout"])) {
+	} else if (isset($_GET["logout"])) {
 		include LOGOUT;
 	} else {
 		include SESSION;
@@ -105,13 +105,13 @@
 							if (isset($_SESSION['user_id'])) {
 						?>
 							Welcome, <?php $_SESSION['username']; ?>!
-							<form class="form-inline pull-right">
+							<form class="form-inline pull-right" method="GET">
 								<input type="submit" class="btn btn-default" name="logout" value="Log Out">
 							</form>
 						<?php
 							} else {
 						?>
-						<form class="form-inline pull-right">
+						<form class="form-inline pull-right" method="GET">
 							<input type="email" class="form-control" name="email" placeholder="Email">
 							<input type="password" class="form-control" name="password" placeholder="Password">
 							<input type="submit" class="btn btn-default" name="login" value="Log In">
