@@ -84,7 +84,7 @@ function findPost($UID){
 
 	$connection->close();
 
-	return $PIDs;
+	return json_encode($PIDs);
 }
 
 //returns all the data for one comment
@@ -114,11 +114,11 @@ function findUser($username){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT ID FROM users WHERE username = '$username'");
+	$query = mysqli_query($connection, "SELECT * FROM users WHERE username = '$username'");
 
 	$connection->close();
 
-	return $query;
+	return json_encode(mysqli_fetch_array($query));
 }
 
 //creates a post with passed information
@@ -137,41 +137,35 @@ function createPost($UID, $CID, $title, $content, $date, $upvotes){
 }
 
 //returns to top/first PCIDs for a post with a passed PID
-function getComments($PID){
+function getComments($PID, $limit){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date");
+	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit");
 
-	$count = 0;
 	$PCIDs = array();
-	while($row = mysqli_fetch_array($query) && count < 25){
+	while($row = mysqli_fetch_array($query)){
 		array_push($PCIDs, $row["PCID"]);
-		$count++;
 	}
 
 	$connection->close();
 
-	return $PCIDs;
+	return json_encode($PCIDs);
 }
 //returns any 25 comments after passed offset
-function getComments($PID, $offset){
+function getComments($PID, $limit, $offset){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date");
+	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit, $offset");
 
-	$count = 0;
 	$PCIDs = array();
-	while($row = mysqli_fetch_array($query) && count < $offset + 25) {
-		if ($count > $offset && < $offset + 25) {
-			array_push($PCIDs, $row["PCID"]);
-		}
-		$count++;
+	while($row = mysqli_fetch_array($query)) {
+		array_push($PCIDs, $row["PCID"]);
 	}
 	$connection->close();
 
-	return $PCIDs;
+	return json_encode($PCIDs);
 }
 
 //removes a post with a passed PID
@@ -204,14 +198,14 @@ function getPostsByUser($UID){
 
 	$connection->close();
 
-	return $posts;
+	return json_encode($posts);
 }
 
 function getCommentsByUser($UID){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($onnection, "SELECT PCID from comments WHERE UID = '$UID'");
+	$query = mysqli_query($onnection, "SELECT PCID FROM comments WHERE UID = '$UID'");
 	$comments = array();
 
 	while($row = mysqli_fetch_array($query)){
@@ -221,4 +215,23 @@ function getCommentsByUser($UID){
 	$connection->close();
 
 	return $comments;
+}
+
+function getCategories($CID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT * FROM categories WHERE CID = '$CID' ");
+
+	$categories = array();
+	while($row = mysqli_fetch_array($query)){
+		array_push($categories, $row["CID"]);
+	}
+
+	$connection->close();
+	if count($categories) > 0{
+		return json_encode($query);
+	} else {
+		echo "No Categories present!"
+	}
 }
