@@ -6,6 +6,12 @@ define ('USERNAME', 'root');
 define ('PASSWORD', "");
 define ('DATABASE', 'guiser');
 
+define ('CREATE_POST', 0);
+define ('CREATE_COMMENT', 1);
+define ('UPVOTE_POST', 2);
+define ('UPVOTE_COMMENT', 3);
+
+
 function connect($ip, $port, $username, $password, $db){
 	if ($port != ""){
 		$ip = $ip . ":" . $port;
@@ -75,11 +81,11 @@ function findPost($UID){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT * FROM posts WHERE UID = '$UID'");
+	$query = mysqli_query($connection, "SELECT PID FROM posts WHERE UID = '$UID'");
 
 	$PIDs = array();
 	while($row = mysqli_fetch_array($query)){
-		array_push($PIDs, $row);
+		array_push($PIDs, $row["PID"]);
 	}
 
 	$connection->close();
@@ -133,7 +139,16 @@ function createPost($UID, $CID, $title, $content){
     	if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
+	if (mysql_query($connection, $sql)) {
+		$last_id = mysql_insert_id($connection);
+	} else {
+		echo "Error!";
+	}
 
+	$sql = "INSERT INTO activities (UID, type, ID) VALUES($UID, CREATE_POST, $last_id)";
+	    if(!mysqli_query($connection, $sql)){
+    		die('Error: '. mysqli_error($connection));
+    	}
     $connection->close();
 
     return TRUE;
@@ -290,6 +305,16 @@ function createComment($UID, $PID, $content){
     		die('Error: '. mysqli_error($connection));
     	}
 
+    if (mysql_query($connection, $sql)) {
+		$last_id = mysql_insert_id($connection);
+	} else {
+		echo "Error!";
+	}
+
+	$sql = "INSERT INTO activities (UID, type, ID) VALUES($UID, CREATE_COMMENT, $last_id)";
+	    if(!mysqli_query($connection, $sql)){
+    		die('Error: '. mysqli_error($connection));
+    	}
     $connection->close();
 
     return TRUE;
