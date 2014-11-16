@@ -452,4 +452,17 @@ function getRecentActivity($UID, $limit, $offset){
 }
 
 
+function searchForString($string, $limit, $offset){
+
+	$connection = connect();
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE (title, content) AGAINST ('$string') LIMIT $offset, $limit");
+
+ 	$results = array();
+ 	while ($row = mysqli_fetch_array($query)){
+ 		array_push($results, $row);
+ 	}
+
+ 	$connection->close();
+ 	return json_encode($results);
+}
 ?>
