@@ -82,4 +82,4 @@ echo getComment(0)
 echo "\n comments by swoon:"
 echo "should be how goes it == "
 echo getCommentsByUser(2)
->>>>>>> origin/master
+
