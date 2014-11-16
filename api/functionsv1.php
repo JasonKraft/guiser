@@ -153,3 +153,17 @@ function getComments($PID){
 
 	return $PCIDs;
 }
+
+//removes a post with a passed PID
+function erasePost($PID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$sql = mysqli_query($connection, "DELETE FROM posts WHERE PID = $PID";
+	//find some way to return data if it successfully deleted or not?
+	if(!mysqli_query($connection, $sql)){
+    	die('Error: '. mysqli_error($connection));
+    }
+
+	$connection->close();
+}
