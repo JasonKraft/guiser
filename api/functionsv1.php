@@ -144,7 +144,7 @@ function getComments($PID){
 
 	$count = 0;
 	$PCIDs = array();
-	while($row = mysqli_fetch_array($query) || count < 25){
+	while($row = mysqli_fetch_array($query) && count < 25){
 		array_push($PCIDs, $row["PCID"]);
 		$count += 1;
 	}
@@ -166,4 +166,6 @@ function erasePost($PID){
     }
 
 	$connection->close();
+
+	return TRUE;
 }
