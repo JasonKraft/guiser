@@ -2,6 +2,8 @@
 	include "../modules/constants.php";
 	if (isset($_POST["login"])) {
 		include LOGIN;
+	} else if (isset($_POST["logout"])) {
+		include LOGOUT;
 	} else {
 		include SESSION;
 	}
@@ -99,11 +101,24 @@
 						GUISER<div id="logo_image"></div>
 					</div>
 					<div class="col-md-6" id="header_login">
-						<form action="login.php" class="form-inline pull-right">
+						<?php
+							if (isset($_SESSION['user_id'])) {
+						?>
+							Welcome, <?php $_SESSION['username']; ?>!
+							<form class="form-inline pull-right">
+								<input type="submit" class="btn btn-default" name="logout" value="Log Out">
+							</form>
+						<?php
+							} else {
+						?>
+						<form class="form-inline pull-right">
 							<input type="email" class="form-control" name="email" placeholder="Email">
 							<input type="password" class="form-control" name="password" placeholder="Password">
 							<input type="submit" class="btn btn-default" name="login" value="Log In">
 						</form>
+						<?php
+							}
+						?>
 					</div>
 				</div>
 			</div>

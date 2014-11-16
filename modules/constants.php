@@ -5,4 +5,5 @@
 	define("LOGIN", "../api/login.php");
 	define("SESSION", "../api/session.php");
 	define("LOGOUT", "../api/logout.php");
+	define("INDEX", "../public/index.php");
 ?>

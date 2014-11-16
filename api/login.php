@@ -23,10 +23,13 @@ if (isset($_POST['submit'])) {
 		$query = mysqli_query($connection,"SELECT * FROM users where password='$password' AND useremail='$useremail'");
 
 		if (($rows = mysqli_num_rows($query)) == 1) {
-			$_SESSION['login_user']=$email; // Initializing Session
-			header("location: index.php"); // Redirecting To Other Page
+			$result = mysqli_fetch_array($query);
+			$_SESSION['user_id'] = $result["ID"]; // Initializing Session
+			$_SESSION['username'] = $result["username"];
+			header("location: " . INDEX); // Redirecting To Other Page
 		} else {
 			$error = "Email or Password is invalid";
 		}
 	}
-}	
+}
+?>
