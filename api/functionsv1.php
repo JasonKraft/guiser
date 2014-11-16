@@ -286,7 +286,7 @@ function createComment($UID, $PID, $content, $upvotes, $date){
 
 	connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$sql = 'INSERT INTO comments (UID, PID, content, upvotes, date) VALUES($UID, $PID, $content, $upvotes, $date');
+	$sql = "INSERT INTO comments (UID, PID, content, upvotes, date) VALUES($UID, $PID, $content, $upvotes, $date");
     	if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
