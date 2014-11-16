@@ -1,18 +1,6 @@
 <?php
 include "functionsv1.php";
-'''
-UID starts at 1
-Test for:
-createUser
-findUser
-createPost
-findPost
-getPost
-getPostsByUser
-getCategories
-erasePost
-getPostByCategory
-'''
+
 
 
 if(createUser("ToastyToes","HackRPI","encarc@rpi.edu")){
