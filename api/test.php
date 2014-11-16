@@ -13,12 +13,12 @@ echo "finding user:";
 echo findUser("ToastyToes");
 
 
-if(createPost(0,0,"yikyak","i does tests",(11/11/11, 11:11),324)){
+if(createPost(0,0,"yikyak","i does tests")){
 	echo "Post created";
 }
 else{
 	echo "Done messed up posting";
 }
 
-echo findPost(0) 
+echo findPost(0); 
 
