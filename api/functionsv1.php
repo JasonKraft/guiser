@@ -33,13 +33,6 @@ function connect(){
 	return $connection;
 }
 
-// function select($connection, $scope, $table, $query_string) {
-// 	$query;
-// 	if (!($query = mysqli_query($connection, "SELECT " . $scope . " FROM " . $table . " " . $query_string))) {
-// 		die("Error: " . mysqli_error($connection) . "\n");
-// 	}
-// 	return $query;
-// }
 function update($connection, $table, $query_string) {
 	if (!mysqli_query($connection, "UPDATE " . $table . " " . $query_string)) {
 		die("Error: " . mysqli_error($connection) . "\n");
@@ -67,10 +60,6 @@ function createUser($username, $password, $email) {
         return FALSE;
     }else{
     	insert($connection, "users", "(username, password, useremail) VALUES('$username', '$password', '$email')");
-    	// $sql = "INSERT INTO users (username, password, useremail) VALUES('$username', '$password', '$email')";
-    	// if(!mysqli_query($connection, $sql)){
-    	// 	die('Error: '. mysqli_error($connection));
-    	// }
     }
 
     $connection->close();
@@ -134,8 +123,6 @@ function findPost($UID){
 //returns all the data for one comment
 function getComment($PCID){
 
-	
-
 	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PCID = '$PCID'");
@@ -177,24 +164,8 @@ function createPost($UID, $CID, $title, $content){
 	$last_id = mysqli_insert_id($connection);
 	insert($connection, "activity", "(UID, type, ID) VALUES($UID, " . CREATE_POST . ", $last_id)");
 
-	// $sql = "INSERT INTO posts (UID, CID, title, content) VALUES($UID, $CID, '$title', '$content')";
- //    	if(!mysqli_query($connection, $sql)){
- //    		die('Error: '. mysqli_error($connection));
- //    	}
-	// if (mysqli_query($connection, $sql)) {
-	// 	$last_id = mysqli_insert_id($connection);
-	// } else {
-	// 	echo "Error!";
-	// }
-
-	// $sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, " . CREATE_POST . ", $last_id)";
-	//     if(!mysqli_query($connection, $sql)){
- //    		die('Error: '. mysqli_error($connection));
- //    	}
-
     $connection->close();
 
-    return TRUE;
 }
 
 //returns any 25 comments after passed offset
@@ -220,18 +191,9 @@ function getComments($PID, $limit, $offset){
 //removes a post with a passed PID
 function erasePost($PID){
 
-	
-
 	$connection = connect();
-
-	//$sql = mysqli_query($connection, "DELETE FROM posts WHERE PID = $PID");
-	$sql = "DELETE FROM posts WHERE PID = $PID";
-	//find some way to return data if it successfully deleted or not?
-	if(!mysqli_query($connection, $sql)){
-    	die('Error: '. mysqli_error($connection));
-    }
-
-	$connection->close();
+	delete($connection, "posts WHERE PID = $PID");
+  	$connection->close();
 
 	return TRUE;
 }
@@ -261,8 +223,6 @@ function getPostsByUser($UID){
 
 function getCommentsByUser($UID){
 
-	
-
 	$connection = connect();
 
 	$query = mysqli_query($onnection, "SELECT * FROM comments WHERE UID = '$UID'");
@@ -282,8 +242,6 @@ function getCommentsByUser($UID){
 }
 
 function getCategories($CID){
-
-	
 
 	$connection = connect();
 
@@ -328,37 +286,25 @@ function getPostByCategory($CID, $limit, $offset){
 //make a comment
 function createComment($UID, $PID, $content){
 
-	
-
 	$connection = connect();
 
 	insert($connection, "comments", "(UID, PID, content) VALUES($UID, $PID, '$content')");
 	$last_id = mysqli_insert_id($connection);
 	insert($connection, "activity", "(UID, type, ID) VALUES($UID, ".CREATE_COMMENT.", $last_id)");
 
-	// $sql = "INSERT INTO comments (UID, PID, content) VALUES($UID, $PID, '$content')";
- //    	if(!mysqli_query($connection, $sql)){
- //    		die('Error: '. mysqli_error($connection));
- //    	}
-
- //    if (mysql_query($connection, $sql)) {
-	// 	$last_id = mysql_insert_id($connection);
-	// } else {
-	// 	echo "Error!";
-	// }
-
-	// $sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, ".CREATE_COMMENT.", $last_id)";
-	//     if(!mysqli_query($connection, $sql)){
- //    		die('Error: '. mysqli_error($connection));
- //    	}
     $connection->close();
+}
 
-    // return TRUE;
+function eraseActivity($AID){
+
+	$connection = connect();
+
+	delete($connection, "activity", "WHERE AID = $AID");
+
+	$connection->close();
 }
 
 function toggleUpvotePost($UID, $PID){
-
-	
 
 	$connection = connect();
 
@@ -368,20 +314,13 @@ function toggleUpvotePost($UID, $PID){
 		die('Error: '. mysqli_error($connection));
 	}
 	if (mysqli_num_rows($query) > 0){
-		$query = mysqli_query($connection, "UPDATE post SET upvotes = upvotes - 1 WHERE PID = $PID");
-
+		update($connection, "post", "SET upvotes = upvotes - 1 WHERE PID = $PID");
+		eraseActivity($query);
 
 	} else {
-		$query = mysqli_query($connection, "UPDATE post SET upvotes = upvotes + 1 WHERE PID = $PID");
-		if (!query){
-			die('Error: '. mysqli_error($connection));
-		}
-		$query = mysqli_query($connection, "INSERT INTO activity (UID, type, ID) VALUES ($UID, ".UPVOTE_POST.", $PID");
-		if (!mysqli_query($connection, $query)){
-			die('Error: '. mysqli_error($connection));
-			}
-
+		update($connection, "post", "SET upvotes = upvotes + 1 WHERE PID = $PID");
 	}
+	insert($connection, "activity", "(UID, type, ID) VALUES ($UID, ".UPVOTE_POST.", $PID");
 	$connection -> close();
 
 }
@@ -391,25 +330,20 @@ function toggleUpvoteComment($UID, $PCID){
 	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM activity WHERE UID = $UID and ID = $PCID AND type = ".UPVOTE_COMMENT." ");
-	if (!query){
+	if (!$query){
 		die('Error: '. mysqli_error($connection));
 	}
 
 	if (mysqli_num_rows($query) > 0) {
-		echo "You already upvoted this!";
-		$connection->close()
-		return FALSE;
+		update($connection, "comments", "SET upvotes = upvotes - 1 WHERE PCID = $PCID");
+		eraseActivity($query);
+		
 	} else {
-		$query = mysqli_query($connection, "UPDATE comment SET upvotes = upvotes + 1 WHERE PCID = $PCID");
-		if (!query){
-			die('Error: '. mysqli_error($connection));
-		}
-		$query = "INSERT INTO activity (UID, type, ID) VALUES ($UID, ".UPVOTE_COMMENT.", $PCID)";
-		if (!mysqli_query($connection, $query)){
-			die('Error: '. mysqli_error($connection));
-		}
-
-		$connection->close();
+		update($connection, "comments", "SET upvotes = upvotes + 1 WHERE PCID = $PCID");
+	}
+	
+	insert($connection, "activity", "(UID, type, ID) VALUES ($UID, ".UPVOTE_COMMENT.", $PCID)");
+	$connection->close();
 	}
 
 } 
@@ -417,17 +351,17 @@ function toggleUpvoteComment($UID, $PCID){
 function sortByUpvotes($CID, $limit, $offset, $type){
 
 	$connection = connect();
-	if ($type == 0){
+	if ($CID != "" && $type == 0){
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)";
-	} else if ($type == 1){
+	} else if ($CID != "" && $type == 1){
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)";
-	} else if ($type == 2){
+	} else if ($CID != "" && $type == 2){
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
-	} else if ($CID == "" and $type == 0){
+	} else if ($type == 0){
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)");
-	} else if ($CID == "" and $type == 1) {
+	} else if ($type == 1) {
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)");
-	} else if ($CID == "" and $type == 2) {
+	} else if ($type == 2) {
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
 	}
 	$connection -> close();
@@ -437,11 +371,7 @@ function eraseComment($PCID){
 
 	$connection = connect();
 
-	$sql = "DELETE FROM comment WHERE PCID = $PCID";
-	//find some way to return data if it successfully deleted or not?
-	if(!mysqli_query($connection, $sql)){
-    	die('Error: '. mysqli_error($connection));
-    }
+	delete($connection, "comments",  "WHERE PCID = $PCID");
 
 	$connection->close();
 
@@ -450,14 +380,10 @@ function eraseComment($PCID){
 function editComment($UID, $PCID, $content){
 
 	$connection = connect();
-	$query = mysqli_query($connection, "UPDATE comment SET content = '$content' WHERE PCID = $PCID");
-	if (!$query){
-		die('Error: '. mysqli_error($connection));
+	update($connection, "comments", "SET content = '$content' WHERE PCID = $PCID");
 	}
-	$query = "INSERT INTO activity (UID, type, ID) VALUES ($UID, ".CREATE_COMMENT.", $PCID)";
-	if (!mysqli_query($connection, $query)){
-		die('Error: '. mysqli_error($connection));
-	}
+	insert($category, "activity", "(UID, type, ID) VALUES ($UID, ".CREATE_COMMENT.", $PCID)");
+
 	$connection -> close();
 }
 
@@ -480,4 +406,5 @@ function getRecentActivity($UID, $limit, $offset){
 		echo "Error: Unable to get Recent Activities";
 	}
 }
+
 
