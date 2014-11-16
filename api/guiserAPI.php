@@ -87,7 +87,7 @@ function getPost($PID){
 
 	$connection = connect();
 
-	$query = mysqli_query($connection, "SELECT * FROM posts WHERE PID = '$PID'");
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE PID = $PID");
 
 	$jsonsettings = array();
 	$cid = array();
@@ -95,10 +95,10 @@ function getPost($PID){
 		array_push($jsonsettings, $row);
 	}
 
-	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID'");
+	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = $PID");
 
 	while ($row = mysqli_fetch_array($query)){
-		array_push($cid, $row["CID"]);
+		array_push($cid, $row["PCID"]);
 	}
 	$jsonsettings["CIDs"] = $cid;
 
@@ -149,7 +149,7 @@ function getComment($PCID){
 	$connection->close();
 
 	// if (count($postInfo) > 0) {
-		return json_encode($postInfo);
+	return json_encode($postInfo);
 	// }else{
 		// echo "Error:  No comments on post!";
 	// }
@@ -186,7 +186,7 @@ function createPost($UID, $CID, $title, $content){
 	update($connection, "categories", "SET size = size + 1 WHERE CID=$CID");
 
     $connection->close();
-
+    return $last_id;
 }
 
 //returns any 25 comments after passed offset

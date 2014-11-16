@@ -48,8 +48,50 @@
 		</div>
 		<?php
 			foreach($post['CIDs'] as $cid) {
+				// echo getComment($cid);
 				$comment = json_decode(getComment($cid), TRUE);
+		?>
+		<div class="row">
+			<div class="col-xs-12 panel">
+				<div class="text-content">
+		<?php
+				echo $comment[0]['content'];
+		?>
+				</div>
+				<div class="post-info">
+					<span class="author">
+						<?php
+							echo json_decode(getUser($comment[0]['UID']), TRUE)['username'];
+						?>
+					</span>
+					<span class="date-posted">
+						<?php
+							echo $comment[0]['date'];
+						?>
+					</span>
+					<span class="up-votes">
+						Upvotes: 
+						<?php
+							echo $comment[0]['upvotes'];
+						?>
+					</span>
+				</div>
+			</div>
+		</div>
+		<?php
+			}
 
+			if(isset($_SESSION['user_id'])) {
+		?>
+		<div class="row">
+			<div class="col-xs-12 panel">
+				<form method="GET">
+					<textarea name="comment-body" class="form-control"></textarea>
+					<input type="submit" class="btn btn-lg btn-primary" name="createcomment" value="Add Comment">
+				</form>
+			</div>
+		</div>
+		<?php
 			}
 		?>
 	</div>

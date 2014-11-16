@@ -7,7 +7,7 @@
 		$category = scrub($_GET['category']);
 		$content = scrub($_GET['content']);
 
-		createPost($UID, $category, $title, $content);
-		header('location: ' . INDEX);
+		$pid = createPost($UID, $category, $title, $content);
+		header('location: ' . POST . "?pid=" . $pid);
 	}
 ?>
