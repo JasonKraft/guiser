@@ -11,7 +11,7 @@
 					<p>Guiser is designed to be a safe place for anyone to share their creative ideas and recieve feedback and tips for cool projects.</p>
 				</div>
 				<div class="col-md-4">
-					<form role="form" action="register.php">
+					<form role="form" method="GET">
 						<input type="email" class="form-control" name="email" placeholder="Email">
 						<input type="text" class="form-control" name="username" placeholder="Username">
 						<input type="password" class="form-control" name="password" placeholder="Password">
