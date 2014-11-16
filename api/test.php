@@ -62,4 +62,4 @@ else{
 }
 
 echo "getPostByCategory\n";
-echo getPostByCategory(0);
+echo getPostByCategory(0, 25);
