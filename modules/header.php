@@ -104,7 +104,7 @@
 						<?php
 							if (isset($_SESSION['user_id'])) {
 						?>
-							Welcome, <?php $_SESSION['username']; ?>!
+							Welcome, <?php echo $_SESSION['username']; ?>!
 							<form class="form-inline pull-right" method="GET">
 								<input type="submit" class="btn btn-default" name="logout" value="Log Out">
 							</form>
