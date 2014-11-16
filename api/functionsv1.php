@@ -95,8 +95,8 @@ function getComment($PCID){
 
 	$postInfo = array();
 	if($row = mysqli_fetch_array($query)){
-		$postInfo["PID"] = $row["PID"];
 		$postInfo["UID"] = $row["UID"];
+		$postInfo["PID"] = $row["PID"];
 		$postInfo["title"] = $row["title"];
 		$postInfo["content"] = $row["content"];
 		$postInfo["date"] = $row["date"];
