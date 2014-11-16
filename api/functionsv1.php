@@ -60,7 +60,7 @@ function getPost($PID){
 		array_push($jsonsettings, $row);
 	}
 
-	$query = mysqli_query($connection, "SELECT CID FROM comments WHERE PID = '$PID'");
+	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID'");
 
 	while ($row = mysqli_fetch_array($query)){
 		array_push($cid, $row["CID"]);
@@ -145,7 +145,7 @@ function createPost($UID, $CID, $title, $content){
 		echo "Error!";
 	}
 
-	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, CREATE_POST, $last_id)";
+	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, " . CREATE_POST . ", $last_id)";
 	    if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
@@ -200,7 +200,8 @@ function erasePost($PID){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$sql = mysqli_query($connection, "DELETE FROM posts WHERE PID = $PID");
+	//$sql = mysqli_query($connection, "DELETE FROM posts WHERE PID = $PID");
+	$sql = "DELETE FROM posts WHERE PID = $PID";
 	//find some way to return data if it successfully deleted or not?
 	if(!mysqli_query($connection, $sql)){
     	die('Error: '. mysqli_error($connection));
@@ -280,7 +281,7 @@ function getPostByCategory($CID, $limit){
 
 	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID' ORDER BY CID LIMIT $limit");
 
-	$full;
+	$full = array();
 	while($row = mysqli_fetch_array($query)){
 		array_push($full, $row);
 	}
@@ -331,7 +332,7 @@ function createComment($UID, $PID, $content){
 		echo "Error!";
 	}
 
-	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, CREATE_COMMENT, $last_id)";
+	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, ".CREATE_COMMENT.", $last_id)";
 	    if(!mysqli_query($connection, $sql)){
     		die('Error: '. mysqli_error($connection));
     	}
