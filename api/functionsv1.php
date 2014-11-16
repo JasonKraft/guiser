@@ -38,3 +38,30 @@ function createUser($username, $password, $email, $settings) {
     }
     return TRUE;
 }
+
+//Gets a post given a PID and represents it in json
+function getPost($PID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE PID = '$PID'");
+
+	$jsonsettings = array();
+	$cid = array();
+	if ($row = mysqli_fetch_array($query)){
+		$jsonsettings["title"] = $row["title"];
+		$jsonsettings["content"] = $row["content"];
+		$jsonsettings["upvotes"] = $row["upvotes"];
+		$jsonsettings["date"] = $row["date"];
+	}
+
+	$query = mysqli_query($connection, "SELECT CID FROM comments WHERE PID = '$PID'");
+
+	while ($row = mysqli_fetch_array($query)){
+		array_push($cid, $row["CID"]);
+	}
+	$jsonsettings["CIDs"] = $cid;
+
+
+	return json_encode($jsonsettings);
+}
