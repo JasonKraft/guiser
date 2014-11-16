@@ -52,10 +52,7 @@ function getPost($PID){
 	$jsonsettings = array();
 	$cid = array();
 	if ($row = mysqli_fetch_array($query)){
-		$jsonsettings["title"] = $row["title"];
-		$jsonsettings["content"] = $row["content"];
-		$jsonsettings["upvotes"] = $row["upvotes"];
-		$jsonsettings["date"] = $row["date"];
+		array_push($jsonsettings, $row);
 	}
 
 	$query = mysqli_query($connection, "SELECT CID FROM comments WHERE PID = '$PID'");
@@ -67,7 +64,11 @@ function getPost($PID){
 
 	$connection->close();
 
-	return json_encode($jsonsettings);
+	if (count($jsonsettings) > 0){
+		return json_encode($jsonsettings);
+	} else {
+		echo "Error:  Unable to find post!";
+	}
 }
 
 //find all posts made my this user ID, return array of post ID's
@@ -79,12 +80,16 @@ function findPost($UID){
 
 	$PIDs = array();
 	while($row = mysqli_fetch_array($query)){
-		array_push($PIDs, $row["PID"]);
+		array_push($PIDs, $row);
 	}
 
 	$connection->close();
 
-	return json_encode($PIDs);
+	if (count($PIDs){
+		return json_encode($PIDs);
+	} else {
+		echo "Error: Post not Found!";
+	}
 }
 
 //returns all the data for one comment
@@ -96,17 +101,16 @@ function getComment($PCID){
 
 	$postInfo = array();
 	if($row = mysqli_fetch_array($query)){
-		$postInfo["UID"] = $row["UID"];
-		$postInfo["PID"] = $row["PID"];
-		$postInfo["title"] = $row["title"];
-		$postInfo["content"] = $row["content"];
-		$postInfo["date"] = $row["date"];
-		$postInfo["upvotes"] = $row["upvotes"];
+		array_push($postInfo, $row);
 	}
 
 	$connection->close();
 
-	return json_encode($postInfo);
+	if (count($postInfo) > 0) {
+		return json_encode($postInfo);
+	}else{
+		echo "Error:  No comments on post!";
+	}
 }
 
 //returns the UID for someone with a given username
@@ -118,7 +122,7 @@ function findUser($username){
 
 	$connection->close();
 
-	return json_encode(mysqli_fetch_array($query));
+	return json_encode(mysqli_fetch_array($query);
 }
 
 //creates a post with passed information
@@ -133,7 +137,7 @@ function createPost($UID, $CID, $title, $content, $date, $upvotes){
 
     $connection->close();
 
-    return true;
+    return TRUE;
 }
 
 //returns to top/first PCIDs for a post with a passed PID
@@ -141,31 +145,40 @@ function getComments($PID, $limit){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit");
+	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit");
 
 	$PCIDs = array();
 	while($row = mysqli_fetch_array($query)){
-		array_push($PCIDs, $row["PCID"]);
+		array_push($PCIDs, $row);
 	}
 
 	$connection->close();
 
-	return json_encode($PCIDs);
+	if (count($PCIDs) > 0){
+		return json_encode($PCIDs);
+	} else {
+		echo "Error: No comments exist on post!";
+	}
 }
+
 //returns any 25 comments after passed offset
 function getComments($PID, $limit, $offset){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit, $offset");
+	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit, $offset");
 
 	$PCIDs = array();
 	while($row = mysqli_fetch_array($query)) {
-		array_push($PCIDs, $row["PCID"]);
+		array_push($PCIDs, $row);
 	}
 	$connection->close();
 
-	return json_encode($PCIDs);
+	if (count($PCIDs) > 0){
+		return json_encode($PCIDs);
+	} else {
+		echo "Error:  No comments on post!";
+	}
 }
 
 //removes a post with a passed PID
@@ -189,32 +202,40 @@ function getPostsByUser($UID){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT PID FROM posts WHERE UID = '$UID'");
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE UID = '$UID'");
 	$posts = array();
 
 	while($row = mysqli_fetch_array($query)){
-		array_push($posts, $row["PID"]);
+		array_push($posts, $row);
 	}
 
 	$connection->close();
 
-	return json_encode($posts);
+	if (count($posts) > 0){
+		return json_encode($posts);
+	} else {
+		echo "No posts by user";
+	}
 }
 
 function getCommentsByUser($UID){
 
 	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($onnection, "SELECT PCID FROM comments WHERE UID = '$UID'");
+	$query = mysqli_query($onnection, "SELECT * FROM comments WHERE UID = '$UID'");
 	$comments = array();
 
 	while($row = mysqli_fetch_array($query)){
-		array_push($posts, $row["PCID"]);
+		array_push($comments, $row);
 	}
 
 	$connection->close();
 
-	return $comments;
+	if (count($comments) > 0) {
+		return json_encode($comments);
+	} else {
+		echo "No comments by user";
+	}
 }
 
 function getCategories($CID){
@@ -225,12 +246,13 @@ function getCategories($CID){
 
 	$categories = array();
 	while($row = mysqli_fetch_array($query)){
-		array_push($categories, $row["CID"]);
+		array_push($categories, $row);
 	}
 
 	$connection->close();
-	if count($categories) > 0{
-		return json_encode($query);
+
+	if (count($categories)) > 0{
+		return json_encode($categories);
 	} else {
 		echo "No Categories present!"
 	}
