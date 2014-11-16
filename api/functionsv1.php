@@ -33,6 +33,13 @@ function connect(){
 	return $connection;
 }
 
+// function select($connection, $scope, $table, $query_string) {
+// 	$query;
+// 	if (!($query = mysqli_query($connection, "SELECT " . $scope . " FROM " . $table . " " . $query_string))) {
+// 		die("Error: " . mysqli_error($connection) . "\n");
+// 	}
+// 	return $query;
+// }
 function update($connection, $table, $query_string) {
 	if (!mysqli_query($connection, "UPDATE " . $table . " " . $query_string)) {
 		die("Error: " . mysqli_error($connection) . "\n");
@@ -59,10 +66,11 @@ function createUser($username, $password, $email) {
         echo "input already exists";
         return FALSE;
     }else{
-    	$sql = "INSERT INTO users (username, password, useremail) VALUES('$username', '$password', '$email')";
-    	if(!mysqli_query($connection, $sql)){
-    		die('Error: '. mysqli_error($connection));
-    	}
+    	insert($connection, "users", "(username, password, useremail) VALUES('$username', '$password', '$email')");
+    	// $sql = "INSERT INTO users (username, password, useremail) VALUES('$username', '$password', '$email')";
+    	// if(!mysqli_query($connection, $sql)){
+    	// 	die('Error: '. mysqli_error($connection));
+    	// }
     }
 
     $connection->close();
@@ -167,20 +175,24 @@ function createPost($UID, $CID, $title, $content){
 
 	$connection = connect();
 
-	$sql = "INSERT INTO posts (UID, CID, title, content) VALUES($UID, $CID, '$title', '$content')";
-    	if(!mysqli_query($connection, $sql)){
-    		die('Error: '. mysqli_error($connection));
-    	}
-	if (mysqli_query($connection, $sql)) {
-		$last_id = mysqli_insert_id($connection);
-	} else {
-		echo "Error!";
-	}
+	insert($connection, "posts", "(UID, CID, title, content) VALUES($UID, $CID, '$title', '$content')");
+	$last_id = mysqli_insert_id($connection);
+	insert($connection, "activity", "(UID, type, ID) VALUES($UID, " . CREATE_POST . ", $last_id)");
 
-	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, " . CREATE_POST . ", $last_id)";
-	    if(!mysqli_query($connection, $sql)){
-    		die('Error: '. mysqli_error($connection));
-    	}
+	// $sql = "INSERT INTO posts (UID, CID, title, content) VALUES($UID, $CID, '$title', '$content')";
+ //    	if(!mysqli_query($connection, $sql)){
+ //    		die('Error: '. mysqli_error($connection));
+ //    	}
+	// if (mysqli_query($connection, $sql)) {
+	// 	$last_id = mysqli_insert_id($connection);
+	// } else {
+	// 	echo "Error!";
+	// }
+
+	// $sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, " . CREATE_POST . ", $last_id)";
+	//     if(!mysqli_query($connection, $sql)){
+ //    		die('Error: '. mysqli_error($connection));
+ //    	}
     $connection->close();
 
     return TRUE;
@@ -321,24 +333,28 @@ function createComment($UID, $PID, $content){
 
 	$connection = connect();
 
-	$sql = "INSERT INTO comments (UID, PID, content) VALUES($UID, $PID, '$content')";
-    	if(!mysqli_query($connection, $sql)){
-    		die('Error: '. mysqli_error($connection));
-    	}
+	insert($connection, "comments", "(UID, PID, content) VALUES($UID, $PID, '$content')");
+	$last_id = mysqli_insert_id($connection);
+	insert($connection, "activity", "(UID, type, ID) VALUES($UID, ".CREATE_COMMENT.", $last_id)");
 
-    if (mysql_query($connection, $sql)) {
-		$last_id = mysql_insert_id($connection);
-	} else {
-		echo "Error!";
-	}
+	// $sql = "INSERT INTO comments (UID, PID, content) VALUES($UID, $PID, '$content')";
+ //    	if(!mysqli_query($connection, $sql)){
+ //    		die('Error: '. mysqli_error($connection));
+ //    	}
 
-	$sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, ".CREATE_COMMENT.", $last_id)";
-	    if(!mysqli_query($connection, $sql)){
-    		die('Error: '. mysqli_error($connection));
-    	}
+ //    if (mysql_query($connection, $sql)) {
+	// 	$last_id = mysql_insert_id($connection);
+	// } else {
+	// 	echo "Error!";
+	// }
+
+	// $sql = "INSERT INTO activity (UID, type, ID) VALUES($UID, ".CREATE_COMMENT.", $last_id)";
+	//     if(!mysqli_query($connection, $sql)){
+ //    		die('Error: '. mysqli_error($connection));
+ //    	}
     $connection->close();
 
-    return TRUE;
+    // return TRUE;
 }
 
 function toggleUpvotePost($UID, $PID){
@@ -353,7 +369,7 @@ function toggleUpvotePost($UID, $PID){
 		die('Error: '. mysqli_error($connection));
 	}
 	if (mysqli_num_rows($query) > 0){
-		$query = mysqli($connection, "UPDATE post SET upvotes = upvotes - 1 WHERE PID = $PID");
+		$query = mysqli_query($connection, "UPDATE post SET upvotes = upvotes - 1 WHERE PID = $PID");
 
 
 	} else {

@@ -1,3 +1,11 @@
+<?php
+	include "../modules/constants.php";
+	if (isset($_POST["login"])) {
+		include LOGIN;
+	} else {
+		include SESSION;
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,7 +102,7 @@
 						<form action="login.php" class="form-inline pull-right">
 							<input type="email" class="form-control" name="email" placeholder="Email">
 							<input type="password" class="form-control" name="password" placeholder="Password">
-							<input type="submit" class="btn btn-default" value="Log In">
+							<input type="submit" class="btn btn-default" name="login" value="Log In">
 						</form>
 					</div>
 				</div>
