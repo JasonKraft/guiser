@@ -407,7 +407,14 @@ function sortByUpvotes($CID, $limit, $offset, $type){
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)";
 	} else if ($type == 2){
 		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
+	} else if ($CID == "" and $type == 0){
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)");
+	} else if ($CID == "" and $type == 1) {
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)");
+	} else if ($CID == "" and $type == 2) {
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
 	}
+	$connection -> close();
 }
 
 function eraseComment($PCID){
