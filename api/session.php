@@ -1,6 +1,6 @@
 <?php
-	include "../modules/constants.php";
-	include API;
+	require_once("../modules/constants.php");
+	require_once(API);
 
 	$connection = connect();
 

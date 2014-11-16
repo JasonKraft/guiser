@@ -8,5 +8,7 @@
 		define("LOGOUT", "../api/logout.php");
 		define("REGISTER", "../api/register.php");
 		define("INDEX", "../public/index.php");
+		define("CREATE_POST_SCRIPT", "../api/createpost.php");
+		define("PAGE_NOT_FOUND", "../public/404.php");
 	}
 ?>

@@ -33,6 +33,14 @@ function connect(){
 	return $connection;
 }
 
+function scrub($malicious_code) {
+	$connection = connect();
+	$clean = stripslashes($malicious_code);
+	$clean = mysqli_real_escape_string($connection, $clean);
+	$connection->close();
+	return $clean;
+}
+
 function update($connection, $table, $query_string) {
 	if (!mysqli_query($connection, "UPDATE " . $table . " " . $query_string)) {
 		die("Error: " . mysqli_error($connection) . "\n");
@@ -96,11 +104,11 @@ function getPost($PID){
 
 	$connection->close();
 
-	if (count($jsonsettings) > 0){
-		return json_encode($jsonsettings);
-	} else {
-		echo "Error:  Unable to find post!";
-	}
+	// if (count($jsonsettings) > 0){
+	return json_encode($jsonsettings);
+	// } else {
+		// echo "Error:  Unable to find post!";
+	// }
 }
 
 //find all posts made my this user ID, return array of post ID's
@@ -140,11 +148,17 @@ function getComment($PCID){
 
 	$connection->close();
 
-	if (count($postInfo) > 0) {
+	// if (count($postInfo) > 0) {
 		return json_encode($postInfo);
-	}else{
-		echo "Error:  No comments on post!";
-	}
+	// }else{
+		// echo "Error:  No comments on post!";
+	// }
+}
+
+function getUser($UID) {
+	$connection = connect();
+	$query = mysqli_query($connection, "SELECT * FROM users WHERE ID=$UID");
+	return json_encode(mysqli_fetch_array($query));
 }
 
 //returns the UID for someone with a given username
@@ -169,6 +183,7 @@ function createPost($UID, $CID, $title, $content){
 	insert($connection, "posts", "(UID, CID, title, content) VALUES($UID, $CID, '$title', '$content')");
 	$last_id = mysqli_insert_id($connection);
 	insert($connection, "activity", "(UID, type, ID) VALUES($UID, " . CREATE_POST . ", $last_id)");
+	update($connection, "categories", "SET size = size + 1 WHERE CID=$CID");
 
     $connection->close();
 
@@ -198,6 +213,9 @@ function getComments($PID, $limit, $offset){
 function erasePost($PID){
 
 	$connection = connect();
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE PID = '$PID'");
+	$row = mysqli_fetch_array($query);
+	update($connection, "categories", "SET size = size - 1 WHERE CID=" . $row['CID']);
 	delete($connection, "posts WHERE PID = $PID");
   	$connection->close();
 
@@ -247,11 +265,11 @@ function getCommentsByUser($UID){
 	}
 }
 
-function getCategories($CID){
+function getCategories(){
 
 	$connection = connect();
 
-	$query = mysqli_query($connection, "SELECT * FROM categories WHERE CID = '$CID' ");
+	$query = mysqli_query($connection, "SELECT * FROM categories");
 
 	$categories = array();
 	while($row = mysqli_fetch_array($query)){
@@ -260,12 +278,12 @@ function getCategories($CID){
 
 	$connection->close();
 
-	if (count($categories) > 0){
+	//if (count($categories) > 0){
 
-		return json_encode($categories);
-	} else {
-		echo "No Categories present!";
-	}
+	return json_encode($categories);
+	// } else {
+		// echo "No Categories present!";
+	// }
 }
 
 function getPostByCategory($CID, $limit, $offset){
@@ -358,18 +376,17 @@ function sortByUpvotes($CID, $limit, $offset, $type){
 	$connection = connect();
 	$query;
 	if ($CID != 0 && $type == 0){
-		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $offset, $limit");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes DESC LIMIT $offset, $limit");
 	} else if ($CID != 0 && $type == 1){
-		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $offset, $limit");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes DESC LIMIT $offset, $limit");
 	} else if ($CID != 0 && $type == 2){
-		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $offset, $limit");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes DESC LIMIT $offset, $limit");
 	} else if ($type == 0){
-		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(NOW(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $offset, $limit");
-		//$query = mysqli_query($connection, "SELECT * FROM posts");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes DESC LIMIT $offset, $limit");
 	} else if ($type == 1) {
-		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $offset, $limit");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes DESC LIMIT $offset, $limit");
 	} else {
-		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $offset, $limit");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes DESC LIMIT $offset, $limit");
 	}
 
 	$full = array();
@@ -379,12 +396,20 @@ function sortByUpvotes($CID, $limit, $offset, $type){
 
 	$connection->close();
 
-	//if(count($full) > 0){
 	return json_encode($full);
-	//}
-	//else{
-	//	echo "No Posts.";
-	//}
+}
+
+function sortByDate($limit, $offset) {
+	$connection = connect();
+	$query = $query = mysqli_query($connection, "SELECT * FROM posts ORDER BY date DESC LIMIT $offset, $limit");
+	$full = array();
+	while($row = mysqli_fetch_array($query)){
+		array_push($full, $row);
+	}
+
+	$connection->close();
+
+	return json_encode($full);
 }
 
 function eraseComment($PCID){
@@ -419,11 +444,11 @@ function getRecentActivity($UID, $limit, $offset){
 
 	$connection->close();
 
-	if (count($activities) > 0){
-		json_encode($activities);
-	} else {
-		echo "Error: Unable to get Recent Activities";
-	}
+	// if (count($activities) > 0){
+	return json_encode($activities);
+	// } else {
+		// echo "Error: Unable to get Recent Activities";
+	// }
 }
 
 

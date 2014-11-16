@@ -1,13 +1,16 @@
 <?php
-	include "../modules/constants.php";
+	require_once("../modules/constants.php");
 	if (isset($_GET["login"])) {
-		include LOGIN;
+		require_once(LOGIN);
 	} else if (isset($_GET["logout"])) {
-		include LOGOUT;
+		require_once(LOGOUT);
 	} else if (isset($_GET["register"])) {
-		include REGISTER;
+		require_once(REGISTER);
 	} else {
-		include SESSION;
+		require_once(SESSION);
+		if (isset($_GET["createpost"]) && isset($_SESSION["user_id"])) {
+			require_once(CREATE_POST_SCRIPT);
+		}
 	}
 ?>
 <!DOCTYPE html>
@@ -24,6 +27,7 @@
 		body {
 			background:#B9D6ED;
 			font-family: 'Gentium Basic', serif;
+			font-size:18px;
 		}
 		h1,h2,h3 {
 			font-family: 'Open Sans', sans-serif;
@@ -32,6 +36,11 @@
 		form {
 			font-family: 'Open Sans', sans-serif;
 			font-weight: 400;
+		}
+		.panel {
+			background:#fff;
+			border-radius: 5px;
+			box-shadow: 0 2px 2px rgba(0,0,0,0.5);
 		}
 		.list-striped {
 			list-style-type: none;
@@ -91,6 +100,9 @@
 			}
 			#call_to_action input {
 				margin:20px 0 0 0;
+			}
+			#newpostform input, select, textarea{
+				margin-bottom: 10px;
 			}
 	</style>
 </head>

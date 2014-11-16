@@ -1,7 +1,7 @@
 <?php
-	include "../modules/constants.php";
-	include API;
-	include HEADER;
+	require_once("../modules/constants.php");
+	require_once(API);
+	require_once(HEADER);
 ?>
 
 <div id="content">

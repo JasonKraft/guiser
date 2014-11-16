@@ -1,8 +1,11 @@
 <?php
-	include "../modules/constants.php";
-	include HEADER;
+	require_once("../modules/constants.php");
+	require_once(HEADER);
 ?>
 <div id="content">
+	<?php
+		if (!isset($_SESSION['user_id'])) {
+	?>
 	<div class="jumbotron" id="call_to_action">
 		<div class="container">
 			<div class="row">
@@ -22,9 +25,52 @@
 			</div>
 		</div>
 	</div>
+	<?php
+		}
+	?>
 	<div class="container">
+		<?php
+			if (isset($_SESSION['user_id'])) {
+		?>
 		<div class="row">
-			<div class="col-md-6" id="top_posts">
+			<div class="col-md-8 panel" id="newpostform">
+				<h3>Create a New Post</h3>
+				<form method="GET">
+					<input type="text" class="form-control" name="title" placeholder="Project Title">
+					<select name="category" class="form-control">
+						<!-- <option value="0" selected="selected"></option> -->
+						<?php
+							$allcategories = json_decode(getCategories(), TRUE);
+							foreach($allcategories as $val) {
+								echo "<option value='" . $val['CID'] . "'>" . $val['name'] . "</option>";
+							}
+						?>
+					</select>
+					<textarea name="content" class="form-control" placeholder="Description"></textarea>
+					<input type="submit" class="btn btn-lg btn-primary" name="createpost">
+				</form>
+			</div>
+			<div class="col-md-4 panel" id="activityfeed">
+				<h3>Recent Activity</h3>
+				<ul class="list-striped">
+				<?php
+					$recentactivity = json_decode(getRecentActivity($_SESSION['user_id'], 10, 0), TRUE);
+					if (count($recentactivity) > 0) {
+						foreach($recentactivity as $value) {
+							echo "<li>" . $value['type'] . "</li>";
+						}
+					} else {
+						echo "<li>No recent activity.</li>";
+					}
+				?>
+				</ul>
+			</div>
+		</div>
+		<?php
+			}
+		?>
+		<div class="row">
+			<div class="col-md-6 panel" id="top_posts">
 				<h3>Top Posts</h3>
 				<ul class="list-striped">
 					<?php
@@ -39,18 +85,24 @@
 					?>
 				</ul>
 			</div>
-			<div class="col-md-6" id="recent_posts">
+			<div class="col-md-6 panel" id="recent_posts">
 				<h3>Recent Posts</h3>
 				<ul class="list-striped">
-					<li>Test</li>
-					<li>Test2</li>
-					<li>Test</li>
-					<li>Test2</li>
+					<?php
+						$recentposts = json_decode(sortByDate(10, 0), TRUE);
+						if (count($recentposts) > 0) {
+							foreach($recentposts as $value) {
+								echo "<li>" . $value['title'] . "</li>";
+							}
+						} else {
+							echo "<li>No posts found.</li>";
+						}
+					?>
 				</ul>
 			</div>
 		</div>
 	</div>
 </div>
 <?php
-	include FOOTER;
+	require_once(FOOTER);
 ?>
