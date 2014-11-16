@@ -179,7 +179,7 @@ function getComments($PID, $limit, $offset){
 
 	$connection = connect();
 
-	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit, $offset");
+	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $offset, $limit");
 
 	$PCIDs = array();
 	while($row = mysqli_fetch_array($query)) {
@@ -272,7 +272,7 @@ function getPostByCategory($CID, $limit, $offset){
 	
 	$connection = connect();
 
-	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID' ORDER BY CID LIMIT $limit, $offset");
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID' ORDER BY CID LIMIT $offset, $limit");
 
 	$full;
 	while($row = mysqli_fetch_array($query)){
@@ -356,20 +356,35 @@ function toggleUpvoteComment($UID, $PCID){
 function sortByUpvotes($CID, $limit, $offset, $type){
 
 	$connection = connect();
-	if ($CID != "" && $type == 0){
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)");
-	} else if ($CID != "" && $type == 1){
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)");
-	} else if ($CID != "" && $type == 2){
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
+	$query;
+	if ($CID != 0 && $type == 0){
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $offset, $limit");
+	} else if ($CID != 0 && $type == 1){
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $offset, $limit");
+	} else if ($CID != 0 && $type == 2){
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = $CID AND date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $offset, $limit");
 	} else if ($type == 0){
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $limit, $offset)");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(NOW(), INTERVAL 1 DAY) ORDER BY upvotes LIMIT $offset, $limit");
+		//$query = mysqli_query($connection, "SELECT * FROM posts");
 	} else if ($type == 1) {
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $limit, $offset)");
-	} else if ($type == 2) {
-		$query = mysqli_query($connection, "SELECT * FROM post WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $limit, $offset)");
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 WEEK) ORDER BY upvotes LIMIT $offset, $limit");
+	} else {
+		$query = mysqli_query($connection, "SELECT * FROM posts WHERE date > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY upvotes LIMIT $offset, $limit");
 	}
-	$connection -> close();
+
+	$full = array();
+	while($row = mysqli_fetch_array($query)){
+		array_push($full, $row);
+	}
+
+	$connection->close();
+
+	//if(count($full) > 0){
+	return json_encode($full);
+	//}
+	//else{
+	//	echo "No Posts.";
+	//}
 }
 
 function eraseComment($PCID){
@@ -394,7 +409,7 @@ function editComment($UID, $PCID, $content){
 function getRecentActivity($UID, $limit, $offset){
 
 	$connection = connect();
-	$query = mysqli_query($connection, "SELECT * FROM activity WHERE UID = $UID ORDER BY date LIMIT $limit, $offset");
+	$query = mysqli_query($connection, "SELECT * FROM activity WHERE UID = $UID ORDER BY date LIMIT $offset, $limit");
 
 	$activities = array();
 

@@ -27,10 +27,16 @@
 			<div class="col-md-6" id="top_posts">
 				<h3>Top Posts</h3>
 				<ul class="list-striped">
-					<li>Test</li>
-					<li>Test2</li>
-					<li>Test</li>
-					<li>Test2</li>
+					<?php
+						$topposts = json_decode(sortByUpvotes(0, 10, 0, 0), TRUE);
+						if (count($topposts) > 0) {
+							foreach($topposts as $value) {
+								echo "<li>" . $value['title'] . "</li>";
+							}
+						} else {
+							echo "<li>No posts found.</li>";
+						}
+					?>
 				</ul>
 			</div>
 			<div class="col-md-6" id="recent_posts">
