@@ -59,9 +59,14 @@
 					font-size:24px;
 				}
 					#logo_image {
+						display:inline-block;
 						height:48px;
 						width:48px;
-						background-image: url('./img/');
+						background-image: url('./img/Guiser-Logo.png');
+						/*background-size:contain;*/
+						background-repeat: no-repeat;
+						vertical-align: -45%;
+						margin-left:25px;
 					}
 			#call_to_action {
 				background:url('./img/geyser.jpg');
@@ -83,8 +88,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6" id="header_logo">
-						GUISER
-						<span id="logo_image"></span>
+						GUISER<div id="logo_image"></div>
 					</div>
 					<div class="col-md-6" id="header_login">
 						<form action="login.php" class="form-inline pull-right">
