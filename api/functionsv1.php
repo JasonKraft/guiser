@@ -130,7 +130,7 @@ function createPost($UID, $CID, $title, $content, $date, $upvotes){
     		die('Error: '. mysqli_error($connection));
     	}
 
-    connection->close();
+    $connection->close();
 
     return true;
 }
