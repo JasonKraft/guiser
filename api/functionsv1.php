@@ -259,11 +259,12 @@ function getCategories($CID){
 	}
 }
 
-function getPostByCatagory($CID){
+//get all the posts that have a certain category ID
+function getPostByCategory($CID){
 
 	connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
 
-	$query = mysqli_query($connection, "SELECT * FROM categories WHERE CID = '$CID'");
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID'");
 
 	$full;
 	while($row = mysqli_fetch_array($query)){
@@ -275,7 +276,22 @@ function getPostByCatagory($CID){
 		return json_encode($full);
 	}
 	else{
-		echo "No Posts in this Catagory";
+		echo "No Posts in this Category";
 	}
 
+}
+
+//make a comment
+function createComment($UID, $PID, $content, $upvotes, $date){
+
+	connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$sql = 'INSERT INTO comments (UID, PID, content, upvotes, date) VALUES($UID, $PID, $content, $upvotes, $date');
+    	if(!mysqli_query($connection, $sql)){
+    		die('Error: '. mysqli_error($connection));
+    	}
+
+    $connection->close();
+
+    return true;
 }
