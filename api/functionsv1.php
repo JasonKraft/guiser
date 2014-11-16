@@ -27,7 +27,6 @@ function connect(){
 	}
 
 	if (mysqli_connect_errno()){
-		echo "You done fucked up mate";
 		exit();
 	}
 
