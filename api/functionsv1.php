@@ -36,6 +36,8 @@ function createUser($username, $password, $email, $settings) {
     		die('Error: '. mysqli_error($con));
     	}
     }
+
+    $connection->close();
     return TRUE;
 }
 
@@ -62,6 +64,46 @@ function getPost($PID){
 	}
 	$jsonsettings["CIDs"] = $cid;
 
+	$connection->close();
 
 	return json_encode($jsonsettings);
+}
+
+//find all posts made my this user ID, return array of post ID's
+function findPost($UID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT * FROM posts WHERE UID = '$UID'");
+
+	$PIDs = array();
+	while($row = mysqli_fetch_array($query)){
+		array_push($PIDs, $row["PID"]);
+	}
+
+	$connection->close();
+
+	return $PIDs;
+}
+
+//returns all the data for one comment
+function getComment($PCID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PCID = '$PCID'");
+
+	$postInfo = array();
+	if($row = mysqli_fetch_array($query)){
+		$postInfo["PID"] = $row["PID"];
+		$postInfo["UID"] = $row["UID"];
+		$postInfo["title"] = $row["title"];
+		$postInfo["content"] = $row["content"];
+		$postInfo["date"] = $row["date"];
+		$postInfo["upvotes"] = $row["upvotes"];
+	}
+
+	$connection->close();
+
+	return json_encode($postInfo);
 }
