@@ -11,13 +11,18 @@ define ('CREATE_COMMENT', 1);
 define ('UPVOTE_POST', 2);
 define ('UPVOTE_COMMENT', 3);
 
+define ('DAY', 0);
+define ('WEEK', 1);
+define ('Month', 2);
 
-function connect($ip, $port, $username, $password, $db){
-	if ($port != ""){
-		$ip = $ip . ":" . $port;
+function connect(){
+	$connection;
+
+	if (PORT != ""){
+		$connection = new mysqli(IP . ":" . PORT, USERNAME, PASSWORD, DATABASE);
+	} else {
+		$connection = new mysqli(IP, USERNAME, PASSWORD, DATABASE);
 	}
-
-	$connection = new mysqli($ip, $username, $password, $db);
 
 	if (mysqli_connect_errno()){
 		echo "You done fucked up mate";
@@ -30,7 +35,7 @@ function connect($ip, $port, $username, $password, $db){
 //Function may or may not be complete, don't know what to do with settings
 function createUser($username, $password, $email) {
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	$connection = connect();
 
 	$query = mysqli_query($connection,"SELECT ID FROM users WHERE username='$username' OR useremail='$email'");
 	if(mysqli_num_rows($query)>0){
@@ -50,7 +55,9 @@ function createUser($username, $password, $email) {
 //Gets a post given a PID and represents it in json
 function getPost($PID){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM posts WHERE PID = '$PID'");
 
@@ -79,7 +86,9 @@ function getPost($PID){
 //find all posts made my this user ID, return array of post ID's
 function findPost($UID){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT PID FROM posts WHERE UID = '$UID'");
 
@@ -100,7 +109,9 @@ function findPost($UID){
 //returns all the data for one comment
 function getComment($PCID){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PCID = '$PCID'");
 
@@ -121,7 +132,9 @@ function getComment($PCID){
 //returns the UID for someone with a given username
 function findUser($username){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM users WHERE username = '$username'");
 
@@ -133,7 +146,9 @@ function findUser($username){
 //creates a post with passed information
 function createPost($UID, $CID, $title, $content){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$sql = "INSERT INTO posts (UID, CID, title, content) VALUES($UID, $CID, '$title', '$content')";
     	if(!mysqli_query($connection, $sql)){
@@ -154,31 +169,10 @@ function createPost($UID, $CID, $title, $content){
     return TRUE;
 }
 
-//returns to top/first PCIDs for a post with a passed PID
-function getComments($PID, $limit){
-
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
-
-	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit");
-
-	$PCIDs = array();
-	while($row = mysqli_fetch_array($query)){
-		array_push($PCIDs, $row);
-	}
-
-	$connection->close();
-
-	if (count($PCIDs) > 0){
-		return json_encode($PCIDs);
-	} else {
-		echo "Error: No comments exist on post!";
-	}
-}
-
 //returns any 25 comments after passed offset
-function mb_getComments($PID, $limit, $offset){
+function getComments($PID, $limit, $offset){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM comments WHERE PID = '$PID' ORDER BY date LIMIT $limit, $offset");
 
@@ -198,7 +192,9 @@ function mb_getComments($PID, $limit, $offset){
 //removes a post with a passed PID
 function erasePost($PID){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	//$sql = mysqli_query($connection, "DELETE FROM posts WHERE PID = $PID");
 	$sql = "DELETE FROM posts WHERE PID = $PID";
@@ -215,7 +211,9 @@ function erasePost($PID){
 //returns an array containing all posts made by user
 function getPostsByUser($UID){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM posts WHERE UID = '$UID'");
 	$posts = array();
@@ -235,7 +233,9 @@ function getPostsByUser($UID){
 
 function getCommentsByUser($UID){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$query = mysqli_query($onnection, "SELECT * FROM comments WHERE UID = '$UID'");
 	$comments = array();
@@ -255,7 +255,9 @@ function getCommentsByUser($UID){
 
 function getCategories($CID){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM categories WHERE CID = '$CID' ");
 
@@ -274,30 +276,9 @@ function getCategories($CID){
 	}
 }
 
-//get all the posts that have a certain category ID
-function getPostByCategory($CID, $limit){
-
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
-
-	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID' ORDER BY CID LIMIT $limit");
-
-	$full = array();
-	while($row = mysqli_fetch_array($query)){
-		array_push($full, $row);
-	}
-
-	$connection->close();
-	if(count($full) > 0){
-		return json_encode($full);
-	}
-	else{
-		echo "No Posts in this Category";
-	}
-
-}
-
-function mb_getPostByCategory($CID, $limit, $offset){
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+function getPostByCategory($CID, $limit, $offset){
+	
+	$connection = connect();
 
 	$query = mysqli_query($connection, "SELECT * FROM posts WHERE CID = '$CID' ORDER BY CID LIMIT $limit, $offset");
 
@@ -319,7 +300,9 @@ function mb_getPostByCategory($CID, $limit, $offset){
 //make a comment
 function createComment($UID, $PID, $content){
 
-	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+	
+
+	$connection = connect();
 
 	$sql = "INSERT INTO comments (UID, PID, content) VALUES($UID, $PID, '$content')";
     	if(!mysqli_query($connection, $sql)){
@@ -339,4 +322,100 @@ function createComment($UID, $PID, $content){
     $connection->close();
 
     return TRUE;
+}
+
+function toggleUpvotePost($UID, $PID){
+
+	
+
+	$connection = connect();
+
+	$query = mysqli_query($connection, "SELECT * FROM activity WHERE UID = $UID AND ID = $PID AND type = ".UPVOTE_POST."");
+
+	if (!$query){
+		die('Error: '. mysqli_error($connection));
+	}
+	if (mysqli_num_rows($query) > 0){
+		$query = mysqli($connection, "UPDATE post SET upvotes = upvotes - 1 WHERE PID = $PID");
+
+
+	} else {
+		$query = mysqli_query($connection, "UPDATE post SET upvotes = upvotes + 1 WHERE PID = $PID");
+		if (!query){
+			die('Error: '. mysqli_error($connection));
+		}
+		$query = mysqli_query($connection, "INSERT INTO activity (UID, type, ID) VALUES ($UID, ".UPVOTE_POST.", $PID");
+		if (!mysqli_query($connection, $query)){
+			die('Error: '. mysqli_error($connection));
+			}
+
+	}
+	$connection -> close();
+
+}
+
+function toggleUpvoteComment($UID, $PCID){
+
+	$connection = connect();
+
+	$query = mysqli_query($connection, "SELECT * FROM activity WHERE UID = $UID and ID = $PCID AND type = ".UPVOTE_COMMENT." ");
+	if (!query){
+		die('Error: '. mysqli_error($connection));
+	}
+
+	if (mysqli_num_rows($query) > 0) {
+		echo "You already upvoted this!";
+		$connection->close()
+		return FALSE;
+	} else {
+		$query = mysqli_query($connection, "UPDATE comment SET upvotes = upvotes + 1 WHERE PCID = $PCID");
+		if (!query){
+			die('Error: '. mysqli_error($connection));
+		}
+		$query = "INSERT INTO activity (UID, type, ID) VALUES ($UID, ".UPVOTE_COMMENT.", $PCID)";
+		if (!mysqli_query($connection, $query)){
+			die('Error: '. mysqli_error($connection));
+		}
+
+		$connection->close();
+	}
+
+} 
+
+/*function sortByUpvotes($CID, $limit, $offset, $type){
+
+	$connection = connect();
+	if ($type == 0){
+		$query = mysqli_query($connection, "SELECT * FROM post WHERE CID = $CID ORDER BY upvotes LIMIT $limit, $offset)";
+	} else if ($type == 1){
+
+	}
+}*/
+
+function eraseComment($PCID){
+
+	$connection = connect();
+
+	$sql = "DELETE FROM comment WHERE PCID = $PCID";
+	//find some way to return data if it successfully deleted or not?
+	if(!mysqli_query($connection, $sql)){
+    	die('Error: '. mysqli_error($connection));
+    }
+
+	$connection->close();
+
+}
+
+function editComment($UID, $PCID, $content){
+
+	$connection = connect();
+	$query = mysqli_query($connection, "UPDATE comment SET content = '$content' WHERE PCID = $PCID");
+	if (!$query){
+		die('Error: '. mysqli_error($connection));
+	}
+	$query = "INSERT INTO activity (UID, type, ID) VALUES ($UID, ".CREATE_COMMENT.", $PCID)";
+	if (!mysqli_query($connection, $query)){
+		die('Error: '. mysqli_error($connection));
+	}
+	$connection -> close();
 }
