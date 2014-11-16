@@ -146,9 +146,28 @@ function getComments($PID){
 	$PCIDs = array();
 	while($row = mysqli_fetch_array($query) && count < 25){
 		array_push($PCIDs, $row["PCID"]);
-		$count += 1;
+		$count++;
 	}
 
+	$connection->close();
+
+	return $PCIDs;
+}
+//returns any 25 comments after passed offset
+function getComments($PID, $offset){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date");
+
+	$count = 0;
+	$PCIDs = array();
+	while($row = mysqli_fetch_array($query) && count < $offset + 25) {
+		if ($count > $offset && < $offset + 25) {
+			array_push($PCIDs, $row["PCID"]);
+		}
+		$count++;
+	}
 	$connection->close();
 
 	return $PCIDs;
