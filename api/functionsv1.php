@@ -252,8 +252,30 @@ function getCategories($CID){
 	$connection->close();
 
 	if (count($categories)) > 0{
+
 		return json_encode($categories);
 	} else {
 		echo "No Categories present!"
 	}
+}
+
+function getPostByCatagory($CID){
+
+	connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT * FROM categories WHERE CID = '$CID'");
+
+	$full;
+	while($row = mysqli_fetch_array($query)){
+		array_push($full, $row);
+	}
+
+	connection->close();
+	if(count($full) > 0){
+		return json_encode($full);
+	}
+	else{
+		echo "No Posts in this Catagory";
+	}
+
 }
