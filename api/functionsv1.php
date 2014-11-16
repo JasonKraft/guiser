@@ -10,10 +10,12 @@ define ('CREATE_POST', 0);
 define ('CREATE_COMMENT', 1);
 define ('UPVOTE_POST', 2);
 define ('UPVOTE_COMMENT', 3);
+define ('RESCIND_UPVOTE_POST', 4);
+define ('RESCIND_UPVOTE_COMMENT', 5);
 
 define ('DAY', 0);
 define ('WEEK', 1);
-define ('Month', 2);
+define ('MONTH', 2);
 
 function connect(){
 	$connection;
@@ -30,6 +32,22 @@ function connect(){
 	}
 
 	return $connection;
+}
+
+function update($connection, $table, $query_string) {
+	if (!mysqli_query($connection, "UPDATE " . $table . " " . $query_string)) {
+		die("Error: " . mysqli_error($connection) . "\n");
+	}
+}
+function insert($connection, $table, $query_string) {
+	if (!mysqli_query($connection, "INSERT INTO " . $table . " " . $query_string)) {
+		die("Error: " . mysqli_error($connection) . "\n");
+	}
+}
+function delete($connection, $table, $query_string) {
+	if (!mysqli_query($connection, "DELETE FROM " . $table . " " . $query_string)) {
+		die("Error: " . mysqli_error($connection) . "\n");
+	}
 }
 
 //Function may or may not be complete, don't know what to do with settings
