@@ -33,7 +33,7 @@ function createUser($username, $password, $email, $settings) {
     }else{
     	$sql = 'INSERT INTO users (username, password, useremail, settings) VALUES($username, $password, $email, $settings');
     	if(!mysqli_query($connection, $sql)){
-    		die('Error: '. mysqli_error($con));
+    		die('Error: '. mysqli_error($connection));
     	}
     }
 
@@ -106,4 +106,50 @@ function getComment($PCID){
 	$connection->close();
 
 	return json_encode($postInfo);
+}
+
+//returns the UID for someone with a given username
+function findUser($username){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT ID FROM users WHERE username = '$username'");
+
+	$connection->close();
+
+	return $query;
+}
+
+//creates a post with passed information
+function createPost($UID, $CID, $title, $content, $date, $upvotes){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$sql = 'INSERT INTO posts (UID, CID, title, content, date, upvotes) VALUES($UID, $CID, $title, $content, $date, $upvotes');
+    	if(!mysqli_query($connection, $sql)){
+    		die('Error: '. mysqli_error($connection));
+    	}
+
+    connection->close();
+
+    return true;
+}
+
+//returns to top/first PCIDs for a post with a passed PID
+function getComments($PID){
+
+	$connection = connect(IP, PORT, USERNAME, PASSWORD, DATABASE);
+
+	$query = mysqli_query($connection, "SELECT PCID FROM comments WHERE PID = '$PID' ORDER BY date");
+
+	$count = 0;
+	$PCIDs = array();
+	while($row = mysqli_fetch_array($query) || count < 25){
+		array_push($PCIDs, $row["PCID"]);
+		$count += 1;
+	}
+
+	$connection->close();
+
+	return $PCIDs;
 }
