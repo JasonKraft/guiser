@@ -37,7 +37,7 @@
 		}
 		#wrapper {
 			min-height:100%;
-			margin-bottom:-55px;
+			margin-bottom:-75px;
 		}
 			#wrapper:after {
 				content:'';
